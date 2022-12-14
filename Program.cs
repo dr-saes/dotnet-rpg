@@ -1,11 +1,23 @@
+global using dotnet_rpg.Models;
+global using dotnet_rpg.Services.CharacterServices; 
+global using dotnet_rpg.Dtos.Character;
+global using AutoMapper;
+global using Microsoft.EntityFrameworkCore;
+global using dotnet_rpg.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<DataContext>(opts =>
+opts.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddScoped<ICharacterService, CharacterService>();
 
 var app = builder.Build();
 
